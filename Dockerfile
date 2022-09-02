@@ -8,7 +8,7 @@ RUN pip install opencv-python
 RUN apt-get install -y gcc
 RUN pip install pandas
 RUN pip install evalutils
-
+RUN pip install meshio
 RUN groupadd -r algorithm && useradd -m --no-log-init -r -g algorithm algorithm
 
 RUN mkdir -p /opt/algorithm /input /output \
@@ -27,9 +27,18 @@ COPY --chown=algorithm:algorithm requirements.txt /opt/algorithm/
 RUN python -m pip install --user -rrequirements.txt
 # Copy all required files such that they are available within the docker image (code, weights, ...)
 RUN pip install matplotlib
+RUN pip install -U numpy
+
 COPY --chown=algorithm:algorithm model/ /opt/algorithm/model/
 COPY --chown=algorithm:algorithm util/ /opt/algorithm/util/
 COPY --chown=algorithm:algorithm ckpt/ /opt/algorithm/ckpt/
+
+# these are only for testing
+COPY --chown=algorithm:algorithm dummy/ /opt/algorithm/dummy/
+# COPY --chown=algorithm:algorithm test/ /opt/algorithm/test/
+# COPY --chown=algorithm:algorithm output/ /opt/algorithm/output/
+COPY --chown=algorithm:algorithm input/ /input/
+
 COPY --chown=algorithm:algorithm inference_P2ILF-test_docker.py /opt/algorithm/
 
 
@@ -40,7 +49,7 @@ COPY --chown=algorithm:algorithm inference_P2ILF-test_docker.py /opt/algorithm/
 ENTRYPOINT python -m inference_P2ILF-test_docker $0 $@
 
 # you can go in the container and check if you want 
-# ENTRYPOINT /bin/b.ash
+# ENTRYPOINT /bin/bash
 ## ALGORITHM LABELS ##
 
 # These labels are required
@@ -58,5 +67,5 @@ LABEL nl.diagnijmegen.rse.algorithm.hardware.gpu.memory=8G
 
 # sudo docker build -t p2ilf .
 # sudo docker run -ti --rm p2ilf:latest /bin/bash
-
+# sudo docker run -ti --rm p2ilfv2:latest /bin/bash
 # sudo docker save p2ilf:latest | gzip -c > p2ilf2022.tar.gz
