@@ -39,9 +39,13 @@ def cameraIntrinsicMat(data_params):
     return np.asmatrix(Knew)
 
 execute_in_docker = True
-useOnly2DSeg = 1 # Set flag for 2D segmentation only
-useOnly3DSeg = 0 # state:1 for all three (2D seg, 3D seg and 2D-3D registration outputs)
-useReg = 0 #for all three (2D seg, 3D seg and 2D-3D registration outputs)
+useOnly2DSeg = 1 # Set flag for 2D segmentation only --> set 0 if you are doing both 2D and 3D contour segmentation
+
+# If you are doing task 1: set only useOnly3DSeg (2D and 3D contour) i.e. set useOnly2DSeg = 0
+# if you are doing task 2: set both useOnly3DSeg and useReg to 1  i.e. set useOnly2DSeg = 0
+
+useOnly3DSeg = 0 # set:1 for all three (2D seg, 3D seg and/or 2D-3D registration outputs)
+useReg = 0 # set 1 if you are doing 2d-3d registeration --> for all three (2D seg, 3D seg and 2D-3D registration outputs)
 
 class P2ILFChallenge(SegmentationAlgorithm):
     def __init__(self):
